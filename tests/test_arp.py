@@ -48,6 +48,9 @@ class MyTests(unittest.TestCase):
     with open(os.path.join(THIS_DIR, os.pardir, 'tests/fixtures/aix-7.1/arp-a.out'), 'r', encoding='utf-8') as f:
         aix_7_1_arp_a = f.read()
 
+    with open(os.path.join(THIS_DIR, os.pardir, 'tests/fixtures/windows/windows-11/arp-a.out'), 'r', encoding='utf-8') as f:
+        windows_11_arp_a = f.read()
+
     # output
     with open(os.path.join(THIS_DIR, os.pardir, 'tests/fixtures/centos-7.7/arp.json'), 'r', encoding='utf-8') as f:
         centos_7_7_arp_json = json.loads(f.read())
@@ -84,6 +87,9 @@ class MyTests(unittest.TestCase):
 
     with open(os.path.join(THIS_DIR, os.pardir, 'tests/fixtures/aix-7.1/arp-a.json'), 'r', encoding='utf-8') as f:
         aix_7_1_arp_a_json = json.loads(f.read())
+
+    with open(os.path.join(THIS_DIR, os.pardir, 'tests/fixtures/windows/windows-11/arp-a.json'), 'r', encoding='utf-8') as f:
+        windows_11_arp_a_json = json.loads(f.read())
 
     with open(os.path.join(THIS_DIR, os.pardir, 'tests/fixtures/generic/arp-linux-a-address-hostname.json'), 'r', encoding='utf-8') as f:
         generic_arp_linux_a_address_hostname_json = json.loads(f.read())
@@ -172,6 +178,13 @@ class MyTests(unittest.TestCase):
         entries
         """
         self.assertEqual(jc.parsers.arp.parse(self.aix_7_1_arp_a, quiet=True), self.aix_7_1_arp_a_json)
+
+    def test_arp_a_windows_11(self):
+        """
+        Test 'arp -a' on Windows 11 with several interfaces, static entries
+        and blank physical addresses
+        """
+        self.assertEqual(jc.parsers.arp.parse(self.windows_11_arp_a, quiet=True), self.windows_11_arp_a_json)
 
     def test_arp_a_address_hostname(self):
         """

@@ -123,7 +123,7 @@ class info():
     description = '`arp` command parser'
     author = 'Kelly Brazil'
     author_email = 'kellyjonbrazil@gmail.com'
-    compatible = ['linux', 'aix', 'freebsd', 'darwin']
+    compatible = ['linux', 'aix', 'freebsd', 'darwin', 'win32']
     magic_commands = ['arp']
     tags = ['command']
 
@@ -234,6 +234,29 @@ def parse(
                         'flags_mask': None,
                         'iface': rest[-1] if rest else None
                     }
+
+        # detect if windows style was used
+        elif cleandata[0].startswith('Interface:'):
+            iface = None
+            for line in cleandata:
+                splitline = line.split()
+
+                if not splitline or splitline[0] == 'Internet':
+                    continue
+
+                if splitline[0] == 'Interface:':
+                    iface = splitline[1]
+                    continue
+
+                # virtual adapters can leave the Physical Address blank
+                raw_output.append({
+                    'name': None,
+                    'address': splitline[0],
+                    'hwtype': None,
+                    'hwaddress': splitline[1] if len(splitline) > 2 else None,
+                    'iface': iface,
+                    'permanent': splitline[-1] == 'static'
+                })
 
         # otherwise, try bsd style
         else:
